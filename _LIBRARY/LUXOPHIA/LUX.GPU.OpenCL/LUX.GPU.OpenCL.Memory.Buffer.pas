@@ -25,16 +25,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TCLBuffer<TCLContex_,TCLPlatfo_:class;TValue_:record> = class( TCLMemory<TCLContex_,TCLPlatfo_> )
      private
+       type TCLStorag_ = TCLBufferIter<TCLContex_,TCLPlatfo_,TValue_>;
      protected
-       _Count :Integer;
+       _Count  :Integer;
        ///// アクセス
+       function GetStorag :TCLStorag_; reintroduce; virtual;
+       procedure SetStorag( const Storag_:TCLStorag_ ); reintroduce; virtual;
+       function GetSize :T_size_t; override;
        function GetCount :Integer; virtual;
        procedure SetCount( const Count_:Integer ); virtual;
-       function GetSize :T_size_t; override;
      public
        constructor Create; override;
+       destructor Destroy; override;
        ///// プロパティ
-       property Count :Integer read GetCount write SetCount;
+       property Storag :TCLStorag_ read GetStorag write SetStorag;
+       property Count  :Integer    read GetCount  write SetCount ;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLDevBuf<TCLContex_,TCLPlatfo_,TValue_>
@@ -43,7 +48,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// メソッド
-       procedure CreateHandle; override;
+       function CreateHandle :T_cl_int; override;
      public
        constructor Create; override;
      end;
@@ -55,7 +60,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Data :P_void;
        ///// メソッド
-       procedure CreateHandle; override;
+       function CreateHandle :T_cl_int; override;
        procedure DestroHandle; override;
      public
        constructor Create; override;
@@ -74,7 +79,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetValues( const I_:Integer ) :TValue_; virtual;
        procedure SetValues( const I_:Integer; const Values_:TValue_ ); virtual;
        ///// メソッド
-       procedure CreateHandle; override;
+       function CreateHandle :T_cl_int; override;
      public
        ///// プロパティ
        property Buffer                     :TCLBuffer_ read GetBuffer                ;
@@ -103,6 +108,25 @@ uses LUX.GPU.OpenCL;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.GetStorag :TCLStorag_;
+begin
+     Result := TCLStorag_( inherited Storag );
+end;
+
+procedure TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.SetStorag( const Storag_:TCLStorag_ );
+begin
+     inherited Storag := Storag_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.GetSize :T_size_t;
+begin
+     Result := SizeOf( TValue_ ) * _Count;
+end;
+
+//------------------------------------------------------------------------------
+
 function TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.GetCount :Integer;
 begin
      Result := _Count;
@@ -115,20 +139,21 @@ begin
      _Count := Count_;
 end;
 
-//------------------------------------------------------------------------------
-
-function TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.GetSize :T_size_t;
-begin
-     Result := SizeOf( TValue_ ) * _Count;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.Create;
 begin
      inherited;
 
-     _Count := 1;
+     _Count  := 1;
+     _Storag := TCLStorag_.Create( Self );
+end;
+
+destructor TCLBuffer<TCLContex_,TCLPlatfo_,TValue_>.Destroy;
+begin
+      Handle := nil;
+
+     inherited;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLDevBuf<TCLContex_,TCLPlatfo_,TValue_>
@@ -139,13 +164,9 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLDevBuf<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle;
-var
-   E :T_cl_int;
+function TCLDevBuf<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle :T_cl_int;
 begin
-     _Handle := clCreateBuffer( TCLContex( Contex ).Handle, Kind, Size, nil, @E );
-
-     AssertCL( E );
+     _Handle := clCreateBuffer( TCLContex( Contex ).Handle, Kind, Size, nil, @Result );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -165,17 +186,13 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLHosBuf<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle;
-var
-   E :T_cl_int;
+function TCLHosBuf<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle :T_cl_int;
 begin
      inherited;
 
      GetMemAligned( _Data, Ceil2N( Size, 64{Byte} ), 4096{Byte} );
 
-     _Handle := clCreateBuffer( TCLContex( Contex ).Handle, Kind, Size, _Data, @E );
-
-     AssertCL( E );
+     _Handle := clCreateBuffer( TCLContex( Contex ).Handle, Kind, Size, _Data, @Result );
 end;
 
 procedure TCLHosBuf<TCLContex_,TCLPlatfo_,TValue_>.DestroHandle;
@@ -221,15 +238,11 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLBufferIter<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle;
-var
-   E :T_cl_int;
+function TCLBufferIter<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle :T_cl_int;
 begin
      inherited;
 
-     _Handle := clEnqueueMapBuffer( Queuer.Handle, Buffer.Handle, CL_TRUE, Mode, 0, Buffer.Size, 0, nil, nil, @E );
-
-     AssertCL( E );
+     _Handle := clEnqueueMapBuffer( Queuer.Handle, Buffer.Handle, CL_TRUE, Mode, 0, Buffer.Size, 0, nil, nil, @Result );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public

@@ -25,22 +25,28 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TCLImager<TCLContex_,TCLPlatfo_:class;TValue_:record> = class( TCLMemory<TCLContex_,TCLPlatfo_> )
      private
+       type TCLStorag_ = TCLImagerIter<TCLContex_,TCLPlatfo_,TValue_>;
      protected
        _Format :T_cl_image_format;
        _Descri :T_cl_image_desc;
        _CountX :Integer;
        _CountY :Integer;
        ///// アクセス
+       function GetPixChan :T_cl_channel_order; virtual; abstract;
+       function GetPixType :T_cl_channel_type; virtual; abstract;
+       function GetStorag :TCLStorag_; reintroduce; virtual;
+       procedure SetStorag( const Storag_:TCLStorag_ ); reintroduce; virtual;
+       function GetSize :T_size_t; override;
        function GetCountX :Integer; virtual;
        procedure SetCountX( const CountX_:Integer ); virtual;
        function GetCountY :Integer; virtual;
        procedure SetCountY( const CountY_:Integer ); virtual;
-       function GetSize :T_size_t; override;
      public
        constructor Create; override;
        ///// プロパティ
-       property CountX :Integer read GetCountX write SetCountX;
-       property CountY :Integer read GetCountY write SetCountY;
+       property Storag :TCLStorag_ read GetStorag write SetStorag;
+       property CountX :Integer    read GetCountX write SetCountX;
+       property CountY :Integer    read GetCountY write SetCountY;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLDevIma<TCLContex_,TCLPlatfo_,TValue_>
@@ -49,7 +55,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// メソッド
-       procedure CreateHandle; override;
+       function CreateHandle :T_cl_int; override;
      public
        constructor Create; override;
      end;
@@ -61,7 +67,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Data :P_void;
        ///// メソッド
-       procedure CreateHandle; override;
+       function CreateHandle :T_cl_int; override;
        procedure DestroHandle; override;
      public
        constructor Create; override;
@@ -75,16 +81,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             TCLImager_ = TCLImager<TCLContex_,TCLPlatfo_,TValue_>;
             PValue_    = ^TValue_;
      protected
-       _PitchX :T_size_t;
-       _PitchY :T_size_t;
-       _PitchZ :T_size_t;
+       _PitchX :Integer;
+       _PitchY :Integer;
+       _PitchZ :Integer;
        ///// アクセス
        function GetImager :TCLImager_; virtual;
        function GetValueP( const X_,Y_:Integer ) :PValue_; virtual;
        function GetValues( const X_,Y_:Integer ) :TValue_; virtual;
        procedure SetValues( const X_,Y_:Integer; const Values_:TValue_ ); virtual;
        ///// メソッド
-       procedure CreateHandle; override;
+       function CreateHandle :T_cl_int; override;
      public
        ///// プロパティ
        property Imager                        :TCLImager_ read GetImager                ;
@@ -114,6 +120,25 @@ uses LUX.GPU.OpenCL;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TCLImager<TCLContex_,TCLPlatfo_,TValue_>.GetStorag :TCLStorag_;
+begin
+     Result := TCLStorag_( inherited Storag );
+end;
+
+procedure TCLImager<TCLContex_,TCLPlatfo_,TValue_>.SetStorag( const Storag_:TCLStorag_ );
+begin
+     inherited Storag := Storag_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TCLImager<TCLContex_,TCLPlatfo_,TValue_>.GetSize :T_size_t;
+begin
+     Result := SizeOf( TValue_ ) * _CountX * _CountY;
+end;
+
+//------------------------------------------------------------------------------
+
 function TCLImager<TCLContex_,TCLPlatfo_,TValue_>.GetCountX :Integer;
 begin
      Result := _CountX;
@@ -138,18 +163,13 @@ begin
      _CountY := CountY_;
 end;
 
-//------------------------------------------------------------------------------
-
-function TCLImager<TCLContex_,TCLPlatfo_,TValue_>.GetSize :T_size_t;
-begin
-     Result := SizeOf( TValue_ ) * _CountX * _CountY;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TCLImager<TCLContex_,TCLPlatfo_,TValue_>.Create;
 begin
      inherited;
+
+     _Storag := TCLStorag_.Create( Self );
 
      _CountX := 1;
      _CountY := 1;
@@ -163,16 +183,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLDevIma<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle;
-var
-   E :T_cl_int;
+function TCLDevIma<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle :T_cl_int;
 begin
      inherited;
 
      with _Format do
      begin
-          image_channel_order     := CL_RGBA;
-          image_channel_data_type := CL_FLOAT;
+          image_channel_order     := GetPixChan;
+          image_channel_data_type := GetPixType;
      end;
 
      with _Descri do
@@ -189,9 +207,7 @@ begin
           buffer            := nil;
      end;
 
-     _Handle := clCreateImage( TCLContex( Contex ).Handle, Kind, @_Format, @_Descri, nil, @E );
-
-     AssertCL( E );
+     _Handle := clCreateImage( TCLContex( Contex ).Handle, Kind, @_Format, @_Descri, nil, @Result );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -211,9 +227,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLHosIma<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle;
-var
-   E :T_cl_int;
+function TCLHosIma<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle :T_cl_int;
 begin
      inherited;
 
@@ -221,8 +235,8 @@ begin
 
      with _Format do
      begin
-          image_channel_order     := CL_RGBA;
-          image_channel_data_type := CL_FLOAT;
+          image_channel_order     := GetPixChan;
+          image_channel_data_type := GetPixType;
      end;
 
      with _Descri do
@@ -239,9 +253,7 @@ begin
           buffer            := nil;
      end;
 
-     _Handle := clCreateImage( TCLContex( Contex ).Handle, Kind, @_Format, @_Descri, _Data, @E );
-
-     AssertCL( E );
+     _Handle := clCreateImage( TCLContex( Contex ).Handle, Kind, @_Format, @_Descri, _Data, @Result );
 end;
 
 procedure TCLHosIma<TCLContex_,TCLPlatfo_,TValue_>.DestroHandle;
@@ -290,17 +302,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLImagerIter<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle;
+function TCLImagerIter<TCLContex_,TCLPlatfo_,TValue_>.CreateHandle :T_cl_int;
 var
    O, R :record
            X, Y, Z :T_size_t;
          end;
    V :T_cl_event;
-   E :T_cl_int;
 begin
      inherited;
-
-     _PitchX := SizeOf( TValue_ );
 
      O.X := 0;
      O.Y := 0;
@@ -310,9 +319,9 @@ begin
      R.Y := Imager.CountY;
      R.Z := 1;
 
-     _Handle := clEnqueueMapImage( Queuer.Handle, Imager.Handle, CL_TRUE, Mode, @O, @R, @_PitchY, @_PitchZ, 0, nil, @V, @E );
+     _PitchX := SizeOf( TValue_ );
 
-     AssertCL( E );
+     _Handle := clEnqueueMapImage( Queuer.Handle, Imager.Handle, CL_TRUE, Mode, @O, @R, @_PitchY, @_PitchZ, 0, nil, @V, @Result );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public

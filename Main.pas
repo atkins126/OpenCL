@@ -19,10 +19,12 @@ type
         MemoS: TMemo;
       TabItemP: TTabItem;
         TabControlP: TTabControl;
-          TabItemC: TTabItem;
-            MemoC: TMemo;
-          TabItemL: TTabItem;
-            MemoL: TMemo;
+          TabItemPL: TTabItem;
+            MemoPL: TMemo;
+          TabItemPE: TTabItem;
+            MemoPE: TMemo;
+          TabItemPB: TTabItem;
+            MemoPB: TMemo;
       TabItemR: TTabItem;
         Image1: TImage;
     Timer1: TTimer;
@@ -39,13 +41,14 @@ type
     _Device :TCLDevice;
     _Contex :TCLContex;
     _Queuer :TCLQueuer;
-    _Buffer :TCLDevBuf<Double>;
-    _Imager :TCLDevImaRGBA;
-    _Progra :TCLProgra;
-    _Deploy :TCLDeploy;
+    _Buffer :TCLDevBuf<TDoubleC>;
+    _Imager :TCLDevImaBGRAxUInt8;
+    _Librar :TCLLibrar;
+    _Execut :TCLExecut;
+    _Buildr :TCLBuildr;
     _Kernel :TCLKernel;
     ///// メソッド
-    function ShowDeploys :Boolean;
+    function ShowBuildrs :Boolean;
   end;
 
 var
@@ -61,23 +64,27 @@ uses System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-function TForm1.ShowDeploys :Boolean;
+function TForm1.ShowBuildrs :Boolean;
 var
-   L :TCLDeploy;
+   B :TCLBuildr;
 begin
      Result := True;
 
-     for L in _Progra.Deploys do
+     for B in _Execut.Buildrs do
      begin
-          if L.State <> CL_BUILD_SUCCESS then
+          if ( B.CompileStatus <> CL_BUILD_SUCCESS ) or
+             ( B.   LinkStatus <> CL_BUILD_SUCCESS ) then
           begin
                Result := False;
 
-               with MemoL.Lines do
+               with MemoPB.Lines do
                begin
-                    Add( '▼ Platfo[' + L.Device.Platfo.Order.ToString + ']'
-                         + '.Device[' + L.Device       .Order.ToString + ']' );
-                    Add( L.Log );
+                    Add( '▼ Platfo[' + B.Device.Platfo.Order.ToString + ']'
+                         + '.Device[' + B.Device       .Order.ToString + ']' );
+                    Add( '▽ Compile' );
+                    Add( B.CompileLog );
+                    Add( '▽ Link' );
+                    Add( B.LinkLog );
                     Add( '' );
                end;
           end;
@@ -86,15 +93,13 @@ begin
      if not Result then
      begin
           TabControl1.ActiveTab := TabItemP;
-          TabControlP.ActiveTab := TabItemL;
+          TabControlP.ActiveTab := TabItemPB;
      end;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-   B :TCLBufferIter<Double>;
 begin
      ///// プラットフォーム
      _Platfo := TOpenCL.Platfos[ 0 ];                                           // 選択
@@ -111,44 +116,52 @@ begin
      _Queuer := _Contex.Queuers.Add( _Device );                                 // 生成
 
      ///// バッファー
-     _Buffer := TCLDevBuf<Double>.Create( _Contex, _Queuer );                   // 生成
-     _Buffer.Count := 4;                                                        // 要素数の設定
+     _Buffer := TCLDevBuf<TDoubleC>.Create( _Contex, _Queuer );                 // 生成
+     _Buffer.Count := 2;                                                        // 要素数の設定
 
      _AreaC := TDoubleAreaC.Create( -2, -2, +2, +2 );
 
-     B := TCLBufferIter<Double>.Create( _Buffer );                              // マップ
-     B[ 0 ] := _AreaC.Min.R;                                                    // 書き込み
-     B[ 1 ] := _AreaC.Min.I;                                                    // 書き込み
-     B[ 2 ] := _AreaC.Max.R;                                                    // 書き込み
-     B[ 3 ] := _AreaC.Max.I;                                                    // 書き込み
-     B.Free;                                                                    // アンマップ
+     _Buffer.Storag.Map;                                                        // マップ
+     _Buffer.Storag[ 0 ] := _AreaC.Min;                                         // 書き込み
+     _Buffer.Storag[ 1 ] := _AreaC.Max;                                         // 書き込み
+     _Buffer.Storag.Unmap;                                                      // アンマップ
 
      ///// イメージ
-     _Imager := TCLDevImaRGBA.Create( _Contex, _Queuer );                       // 生成
+     _Imager := TCLDevImaBGRAxUInt8.Create( _Contex, _Queuer );                 // 生成
      _Imager.CountX := 500;                                                     // ピクセル数の設定
      _Imager.CountY := 500;                                                     // ピクセル数の設定
 
-     ///// プログラム
-   { _Progra := TCLProgra.Create( _Contex ); }
-     _Progra := _Contex.Progras.Add;                                            // 生成
-     _Progra.Source.LoadFromFile( '..\..\_DATA\Source.cl' );                    // ソースコードのロード
+     ////////// プログラム
 
-     MemoC.Lines.Assign( _Progra.Source );                                      // ソースコードの表示
+     ///// ライブラリ
+   { _Librar := TCLLibrar.Create( _Contex ); }
+     _Librar := _Contex.Librars.Add;                                            // 生成
+     _Librar.Source.LoadFromFile( '..\..\_DATA\Librar.cl' );                    // ソースコードのロード
+
+     MemoPL.Lines.Assign( _Librar.Source );                                     // ソースコードの表示
+
+     ///// 実行形式
+   { _Execut := TCLExecut.Create( _Contex ); }
+     _Execut := _Contex.Executs.Add;                                            // 生成
+     _Execut.Source.LoadFromFile( '..\..\_DATA\Execut.cl' );                    // ソースコードのロード
+
+     MemoPE.Lines.Assign( _Execut.Source );                                     // ソースコードの表示
 
      ///// ビルド
-   { _Deploy := _Progra.Deploys.Add( _Device ); }
-     _Deploy := _Progra.BuildTo( _Device );
+   { _Buildr := _Execut.Buildrs.Add( _Device ); }
+     _Buildr := _Execut.BuildTo( _Device );                                     // 生成
 
-     if ShowDeploys then                                                        // ビルド情報の表示
+     if ShowBuildrs then                                                        // ビルド情報の表示
      begin
           ///// カーネル
-        { _Kernel := TCLKernel.Create( _Progra, 'Main', _Queuer ); }
-          _Kernel := _Progra.Kernels.Add( 'Main', _Queuer );                    // 生成
+        { _Kernel := TCLKernel.Create( _Execut, 'Main', _Queuer ); }
+          _Kernel := _Execut.Kernels.Add( 'Main', _Queuer );                    // 生成
           _Kernel.Argumes['Buffer'] := _Buffer;                                 // バッファの接続
           _Kernel.Argumes['Imager'] := _Imager;                                 // イメージの接続
           _Kernel.GlobWorkSize := [ _Imager.CountX, _Imager.CountY ];           // ループ回数の設定
 
-          Timer1.Enabled := True;
+          if _Kernel.Argumes.BindsOK then Timer1.Enabled := True                // 描画ループ開始
+                                     else TabControl1.ActiveTab := TabItemS;    // 引数のバインドエラー
      end;
 
      TOpenCL.Show( MemoS.Lines );                                               // システム情報の表示
@@ -165,37 +178,34 @@ end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
+     ///// カーネル
      _Kernel.Run;                                                               // 実行
 
-     _Imager.CopyTo( Image1.Bitmap );                                           // 結果表示
+     ///// イメージ
+     _Imager.CopyTo( Image1.Bitmap );                                           // 画像表示
 end;
 
 procedure TForm1.Image1MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 var
-   S :Double;
+   P :TPointF;
    C :TDoubleC;
-   B :TCLBufferIter<Double>;
+   S :Double;
 begin
+     P := Image1.AbsoluteToLocal( ScreenToClient( Screen.MousePos ) );
+
+     C.R := _AreaC.Min.R + _AreaC.SizeR * P.X / Image1.Width ;
+     C.I := _AreaC.Max.I - _AreaC.SizeI * P.Y / Image1.Height;
+
      S := Power( 1.1, WheelDelta / 120 );
 
-     with _AreaC do
-     begin
-          with Image1.AbsoluteToLocal( ScreenToClient( Screen.MousePos ) ) do
-          begin
-               C.R := Min.R + SizeR * X / Image1.Width ;
-               C.I := Max.I - SizeI * Y / Image1.Height;
-          end;
+     _AreaC.Min := ( _AreaC.Min - C ) * S + C;
+     _AreaC.Max := ( _AreaC.Max - C ) * S + C;
 
-          Min := ( Min - C ) * S + C;
-          Max := ( Max - C ) * S + C;
-     end;
-
-     B := TCLBufferIter<Double>.Create( _Buffer );                              // マップ
-     B[ 0 ] := _AreaC.Min.R;                                                    // 書き込み
-     B[ 1 ] := _AreaC.Min.I;                                                    // 書き込み
-     B[ 2 ] := _AreaC.Max.R;                                                    // 書き込み
-     B[ 3 ] := _AreaC.Max.I;                                                    // 書き込み
-     B.Free;
+     ///// バッファー
+     _Buffer.Storag.Map;                                                        // マップ
+     _Buffer.Storag[ 0 ] := _AreaC.Min;                                         // 書き込み
+     _Buffer.Storag[ 1 ] := _AreaC.Max;                                         // 書き込み
+     _Buffer.Storag.Unmap;                                                      // アンマップ
 end;
 
 end. //######################################################################### ■
