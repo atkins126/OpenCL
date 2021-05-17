@@ -14,52 +14,55 @@ TDoubleC ScreenToComplex( const int2 P, const int2 S, const TDoubleAreaC A )
   return Result;
 }
 
-float ComplexToColor( const TDoubleC C, const int MaxN )
+float ComplexToLoop( const TDoubleC C, const int MaxN )
 {
   TDoubleC Z = { 0, 0 };
 
   for ( int N = 1; N < MaxN; N++ )
   {
     Z = Add( Pow2( Z ), C );
-    if ( Abs( Z ) > 2 ) return (float)N / MaxN;
+
+    if ( Abs( Z ) > 10 )
+    {
+      N++; Z = Add( Pow2( Z ), C );
+      N++; Z = Add( Pow2( Z ), C );
+      N++; Z = Add( Pow2( Z ), C );
+      N++; Z = Add( Pow2( Z ), C );
+      N++; Z = Add( Pow2( Z ), C );
+
+      return (float)N + 1 - log( log2( Abs( Z ) ) );
+    }
   }
 
-  return 1;
+  return MaxN;
 }
 
 //------------------------------------------------------------------------------
 
 float4 GammaCorrect( const float4 Color_, const float Gamma_ )
 {
-  float4 Result;
-
-  Result.rgb = pow( Color_.rgb, 1/Gamma_ );
-  Result.a   =      Color_.a              ;
-
-  return Result;
+  return (float4)( pow( Color_.rgb, 1/Gamma_ ), Color_.a );
 }
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 kernel void Main( global     TDoubleC* Buffer,
-                  write_only image2d_t Imager )
+                  write_only image2d_t Imager,
+                   read_only image1d_t Textur,
+                  const      sampler_t Samplr )
 {
+  const int MaxN = 1000;
   const int2 P = { get_global_id  ( 0 ), get_global_id  ( 1 ) };
   const int2 S = { get_global_size( 0 ), get_global_size( 1 ) };
-
   const TDoubleAreaC A = { Buffer[0], Buffer[1] };
 
   TDoubleC C = ScreenToComplex( P, S, A );
 
-  float L = ComplexToColor( C, 1000 );
+  float N = ComplexToLoop( C, MaxN );
 
-  float4 R = (float4)( L, L, L, 1 );
+  float4 T = read_imagef( Textur, Samplr, sqrt( N / MaxN ) );
 
-  float4 G = GammaCorrect( R, 2.2 );
-
-  uint4 U = convert_uint4_sat_rte( 255 * G );
-
-  write_imageui( Imager, P, U );
+  write_imagef( Imager, P, GammaCorrect( T, 2.2 ) );
 }
 
 //##############################################################################
