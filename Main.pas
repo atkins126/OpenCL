@@ -10,7 +10,8 @@ uses
   LUX,
   LUX.Complex,
   LUX.GPU.OpenCL,
-  LUX.GPU.OpenCL.FMX;
+  LUX.GPU.OpenCL.Stream.FMX.D1,
+  LUX.GPU.OpenCL.Stream.FMX.D2;
 
 type
   TForm1 = class(TForm)
@@ -36,25 +37,28 @@ type
   private
     { private 宣言 }
     _AreaC :TDoubleAreaC;
+    ///// メソッド
+    procedure ShowBuild;
   public
     { public 宣言 }
     _Platfo :TCLPlatfo;
     _Device :TCLDevice;
     _Contex :TCLContex;
     _Queuer :TCLQueuer;
-    _Buffer :TCLDevBuf<TDoubleC>;
-    _Imager :TCLDevIma2DxBGRAxUFix8;
-    _Textur :TCLDevIma1DxBGRAxUFix8;
+    _Buffer :TCLBuffer<TDoubleC>;
+    _Textur :TCLImager1DxBGRAxUFix8;
+    _TexFMX :ICLStream1DxBGRAxUFix8_FMX;
     _Samplr :TCLSamplr;
+    _Imager :TCLImager2DxBGRAxUFix8;
+    _ImaFMX :ICLStream2DxBGRAxUFix8_FMX;
     _Librar :TCLLibrar;
     _Execut :TCLExecut;
     _Buildr :TCLBuildr;
     _Kernel :TCLKernel;
     ///// メソッド
-    procedure MakeContex;
-    procedure MakeArgumes;
-    procedure MakeProgras;
-    procedure ShowBuildr;
+    procedure MakeContext;
+    procedure MakeArguments;
+    procedure MakePrograms;
   end;
 
 var
@@ -68,11 +72,32 @@ uses System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TForm1.ShowBuild;
+begin
+     with MemoPB.Lines do
+     begin
+          Add( '▼ Compile' );
+          Add( _Buildr.CompileLog );
+          Add( '' );
+          Add( '▼ Link' );
+          Add( _Buildr.LinkLog );
+          Add( '' );
+     end;
+
+     if ( _Buildr.CompileLog = '' ) and
+        ( _Buildr.LinkLog    = '' ) then Exit;
+
+     TabControl1.ActiveTab := TabItemP;
+     TabControlP.ActiveTab := TabItemPB;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TForm1.MakeContex;
+procedure TForm1.MakeContext;
 begin
      ////////// プラットフォーム
 
@@ -84,73 +109,74 @@ begin
 
      ////////// コンテキスト
 
-   { _Contex := TCLContex.Create( _Platfo ); }                                  // 生成
-     _Contex := _Platfo.Contexs.Add;                                            // 生成
+     _Contex := TCLContex.Create( _Platfo );                                    // 生成
 
      ////////// コマンドキュー
 
-   { _Queuer := TCLQueuer.Create( _Contex, _Device ); }                         // 生成
-     _Queuer := _Contex.Queuers.Add( _Device );                                 // 生成
+     _Queuer := TCLQueuer.Create( _Contex, _Device );                           // 生成
 
-     Assert( Assigned( _Contex.Handle ), '_Contex is Error!' );
-     Assert( Assigned( _Queuer.Handle ), '_Queuer is Error!' );
+     Assert( Assigned( _Contex.Handle ), '_Contex is Error!' );                 // 検証
+     Assert( Assigned( _Queuer.Handle ), '_Queuer is Error!' );                 // 検証
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TForm1.MakeArgumes;
+procedure TForm1.MakeArguments;
 begin
      ////////// バッファー
 
-     _Buffer := TCLDevBuf<TDoubleC>.Create( _Contex, _Queuer );                 // 生成
+     _Buffer := TCLBuffer<TDoubleC>.Create( _Contex, _Queuer );                 // 生成
 
-     Assert( Assigned( _Buffer.Handle ), '_Buffer is Error!' );
+     Assert( Assigned( _Buffer.Handle ), '_Buffer is Error!' );                 // 検証
 
      _Buffer.Count := 2;                                                        // 要素数の設定
 
      _AreaC := TDoubleAreaC.Create( -2, -2, +2, +2 );
 
-     _Buffer.Storag.Map;                                                        // 展開
-     _Buffer.Storag[ 0 ] := _AreaC.Min;                                         // 書き込み
-     _Buffer.Storag[ 1 ] := _AreaC.Max;                                         // 書き込み
-     _Buffer.Storag.Unmap;                                                      // 同期
-
-     ////////// イメージ
-
-     _Imager := TCLDevIma2DxBGRAxUFix8.Create( _Contex, _Queuer );              // 生成
-
-     Assert( Assigned( _Imager.Handle ), '_Imager is Error!' );
-
-     _Imager.CountX := 500;                                                     // 横ピクセル数の設定
-     _Imager.CountY := 500;                                                     // 縦ピクセル数の設定
+     _Buffer.Data.Map;                                                          // 展開
+     _Buffer.Data[ 0 ] := _AreaC.Min;                                           // 書き込み
+     _Buffer.Data[ 1 ] := _AreaC.Max;                                           // 書き込み
+     _Buffer.Data.Unmap;                                                        // 同期
 
      ////////// テクスチャ
 
-     _Textur := TCLDevIma1DxBGRAxUFix8.Create( _Contex, _Queuer );              // 生成
+     _Textur := TCLImager1DxBGRAxUFix8.Create( _Contex, _Queuer );              // 生成
 
-     Assert( Assigned( _Textur.Handle ), '_Textur is Error!' );
+     Assert( Assigned( _Textur.Handle ), '_Textur is Error!' );                 // 検証
 
-     _Textur.LoadFromFile( '..\..\_DATA\Textur.png' );                          // 画像のロード
+     _TexFMX := TCLStream1DxBGRAxUFix8_FMX.Create( _Textur );                   // ストリームの生成
 
-     _Textur.CopyTo( ImageT.Bitmap );                                           // 画像の表示
+     _TexFMX.LoadFromFile( '..\..\_DATA\Textur.png' );                          // 画像のロード
+
+     _TexFMX.CopyTo( ImageT.Bitmap );                                           // 画像の表示
 
      ////////// サンプラー
 
      _Samplr := TCLSamplr.Create( _Contex );                                    // 生成
 
-     Assert( Assigned( _Samplr.Handle ), '_Samplr is Error!' );
+     Assert( Assigned( _Samplr.Handle ), '_Samplr is Error!' );                 // 検証
+
+     ////////// イメージ
+
+     _Imager := TCLImager2DxBGRAxUFix8.Create( _Contex, _Queuer );              // 生成
+
+     Assert( Assigned( _Imager.Handle ), '_Imager is Error!' );                 // 検証
+
+     _Imager.CountX := 500;                                                     // 横ピクセル数の設定
+     _Imager.CountY := 500;                                                     // 縦ピクセル数の設定
+
+     _ImaFMX := TCLStream2DxBGRAxUFix8_FMX.Create( _Imager );                   // ストリームの生成
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TForm1.MakeProgras;
+procedure TForm1.MakePrograms;
 begin
      ////////// ライブラリ
 
-   { _Librar := TCLLibrar.Create( _Contex ); }                                  // 生成
-     _Librar := _Contex.Librars.Add;                                            // 生成
+     _Librar := TCLLibrar.Create( _Contex );                                    // 生成
 
-     Assert( Assigned( _Librar.Handle ), '_Librar is Error!' );
+     Assert( Assigned( _Librar.Handle ), '_Librar is Error!' );                 // 検証
 
      _Librar.Source.LoadFromFile( '..\..\_DATA\Librar.cl' );                    // ソースコードのロード
 
@@ -158,10 +184,9 @@ begin
 
      ////////// プログラム
 
-   { _Execut := TCLExecut.Create( _Contex ); }                                  // 生成
-     _Execut := _Contex.Executs.Add;                                            // 生成
+     _Execut := TCLExecut.Create( _Contex );                                    // 生成
 
-     Assert( Assigned( _Execut.Handle ), '_Execut is Error!' );
+     Assert( Assigned( _Execut.Handle ), '_Execut is Error!' );                 // 検証
 
      _Execut.Source.LoadFromFile( '..\..\_DATA\Execut.cl' );                    // ソースコードのロード
 
@@ -169,64 +194,41 @@ begin
 
      ////////// ビルド
 
-   { _Buildr := _Execut.Buildrs.Add( _Device ); }                               // 生成
-     _Buildr := _Execut.BuildTo( _Device );                                     // 生成
+     _Buildr := TCLBuildr.Create( _Execut, _Device );                           // 生成
 
-     if Assigned( _Buildr.Handle ) then
-     begin
-          ////////// カーネル
+     if not Assigned( _Buildr.Handle ) then Exit; { _Buildr is Error! }         // 検証
 
-        { _Kernel := TCLKernel.Create( _Execut, 'Main', _Queuer ); }            // 生成
-          _Kernel := _Execut.Kernels.Add( 'Main', _Queuer );                    // 生成
+     ////////// カーネル
 
-          Assert( Assigned( _Kernel.Handle ), '_Kernel is Error!' );
+     _Kernel := TCLKernel.Create( _Execut, 'Main', _Queuer );                   // 生成
 
-          _Kernel.Parames['Buffer'] := _Buffer;                                 // バッファーの接続
-          _Kernel.Parames['Imager'] := _Imager;                                 // イメージの接続
-          _Kernel.Parames['Textur'] := _Textur;                                 // テクスチャの接続
-          _Kernel.Parames['Samplr'] := _Samplr;                                 // サンプラーの接続
+     Assert( Assigned( _Kernel.Handle ), '_Kernel is Error!' );                 // 検証
 
-          _Kernel.GloSizX := _Imager.CountX;                                    // 横ループ回数の設定
-          _Kernel.GloSizY := _Imager.CountY;                                    // 縦ループ回数の設定
+     _Kernel.GloSizX := _Imager.CountX;                                         // Ｘ方向ループ回数の設定
+     _Kernel.GloSizY := _Imager.CountY;                                         // Ｙ方向ループ回数の設定
 
-          if _Kernel.Parames.BindsOK then Timer1.Enabled := True                // 描画開始
-                                     else TabControl1.ActiveTab := TabItemS;    // 引数のバインドエラー
-     end
-     else ShowBuildr; { _Buildr is Error! }                                     // ビルド情報の表示
-end;
+     _Kernel.Parames['Buffer'] := _Buffer;                                      // バッファーの登録
+     _Kernel.Parames['Textur'] := _Textur;                                      // テクスチャの登録
+     _Kernel.Parames['Samplr'] := _Samplr;                                      // サンプラーの登録
+     _Kernel.Parames['Imager'] := _Imager;                                      // イメージ　の登録
 
-procedure TForm1.ShowBuildr;
-begin
-     with MemoPB.Lines do
-     begin
-          if _Buildr.CompileStatus = CL_BUILD_ERROR then
-          begin
-               Add( '▼ Compile' );
-               Add( _Buildr.CompileLog );
-               Add( '' );
-          end;
+     Assert( _Kernel.Parames.FindsOK, '_Kernel.Parames.FindsOK is Error!' );    // 仮引数の照合
+     Assert( _Kernel.Parames.BindsOK, '_Kernel.Parames.BindsOK is Error!' );    // 実引数の接続
 
-          if _Buildr.LinkStatus = CL_BUILD_ERROR then
-          begin
-               Add( '▼ Link' );
-               Add( _Buildr.LinkLog );
-               Add( '' );
-          end;
-     end;
-
-     TabControl1.ActiveTab := TabItemP;
-     TabControlP.ActiveTab := TabItemPB;
+     Timer1.Enabled := True;                                                    // 描画開始
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-     MakeContex;                                                                // コンテキストの生成
+     MakeContext;                                                               // コンテキストの生成
 
-     MakeArgumes;                                                               // 実引数の生成
+     MakeArguments;                                                             // 実引数の生成
 
-     MakeProgras;                                                               // プログラムの生成
+     MakePrograms;                                                              // プログラムの生成
+
+     ShowBuild;                                                                 // ビルド情報の表示
 
      TOpenCL.Show( MemoS.Lines );                                               // システム情報の表示
 end;
@@ -235,7 +237,7 @@ procedure TForm1.FormDestroy(Sender: TObject);
 begin
      MemoS.Lines.SaveToFile( 'System.txt', TEncoding.UTF8 );
 
-     ImageR.Bitmap.SaveToFile( 'Imager.png' )
+     ImageR.Bitmap.SaveToFile( 'Imager.png' );
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +250,7 @@ begin
 
      ////////// イメージ
 
-     _Imager.CopyTo( ImageR.Bitmap );                                           // 画像表示
+     _ImaFMX.CopyTo( ImageR.Bitmap );                                           // 画像の表示
 end;
 
 procedure TForm1.ImageRMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
@@ -269,10 +271,10 @@ begin
 
      ////////// バッファー
 
-     _Buffer.Storag.Map;                                                        // 展開
-     _Buffer.Storag[ 0 ] := _AreaC.Min;                                         // 書き込み
-     _Buffer.Storag[ 1 ] := _AreaC.Max;                                         // 書き込み
-     _Buffer.Storag.Unmap;                                                      // 同期
+     _Buffer.Data.Map;                                                          // 展開
+     _Buffer.Data[ 0 ] := _AreaC.Min;                                           // 書き込み
+     _Buffer.Data[ 1 ] := _AreaC.Max;                                           // 書き込み
+     _Buffer.Data.Unmap;                                                        // 同期
 end;
 
 end. //######################################################################### ■

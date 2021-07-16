@@ -6,35 +6,37 @@ permalink: /
 [`［日本語］`](https://luxophia.github.io/OpenCL/ja/)
 
 # [OpenCL](https://github.com/LUXOPHIA/OpenCL/)
-Parallel computing on the GPU (or CPU) with [OpenCL](https://en.wikipedia.org/wiki/OpenCL).  
+Parallel computing with [OpenCL](https://en.wikipedia.org/wiki/OpenCL) on the GPU (or CPU).  
+
+![](https://github.com/LUXOPHIA/OpenCL/raw/master/--------/_SCREENSHOT/OpenCL.png)
 
 ----
-## ■ 1. [LUX.GPU.OpenCL](https://luxophia.github.io/LUX.GPU.OpenCL/) Library
+## ■ 1. [`LUX.GPU.OpenCL`](https://luxophia.github.io/LUX.GPU.OpenCL/) Library
 
-> [`TOpenCL`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.pas#L60) ：singleton of TCLSystem  
+> [`TOpenCL`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.pas#L82) ：Singleton of TCLSystem  
 > 　┃  
-> [`TCLSystem`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.pas#L60) ：System  
+> [`TCLSystem`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.pas#L67) ：System  
 > 　┗[`TCLPlatfos`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Platfo.pas#L88) ：Platform list  
 > 　　　┗[`TCLPlatfo`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Platfo.pas#L33) ：Platform  
 > 　　　　　┣[`TCLExtenss`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Platfo.pas#L25) ：Extension list  
-> 　　　　　┣[`TCLDevices`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Device.pas#L291) ：Device list  
+> 　　　　　┣[`TCLDevices`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Device.pas#L293) ：Device list  
 > 　　　　　┃　┗[`TCLDevice`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Device.pas#L21) ：Device  
-> 　　　　　┗[`TCLContexs`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Contex.pas#L64) ：Context list  
+> 　　　　　┗[`TCLContexs`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Contex.pas#L62) ：Context list  
 > 　　　　　　　┗[`TCLContex`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Contex.pas#L25) ：Context  
-> 　　　　　　　　　┣[`TCLQueuers`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Queuer.pas#L48) ：Command Queue list  
-> 　　　　　　　　　┃　┗[`TCLQueuer`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Queuer.pas#L22) ：Command Queue  
+> 　　　　　　　　　┣[`TCLQueuers`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Queuer.pas#L51) ：Command Queue list  
+> 　　　　　　　　　┃　┗[`TCLQueuer`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Queuer.pas#L23) ：Command Queue  
 > 　　　　　　　　　┣[`TCLArgumes`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.pas#L44) ：Argument list  
-> 　　　　　　　　　┃　┣[`TCLBuffer`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Buffer.pas#L26) ：Buffer  
-> 　　　　　　　　　┃　┣[`TCLImager`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.pas#L26) ：Image  
+> 　　　　　　　　　┃　┣[`TCLBuffer`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Buffer.pas#L24) ：Buffer  
+> 　　　　　　　　　┃　┣[`TCLImager`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.pas#L24) ：Image  
 > 　　　　　　　　　┃　┗[`TCLSamplr`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Samplr.pas#L21) ：Sampler  
-> 　　　　　　　　　┣[`TCLLibrars`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L234) ：Library program list  
-> 　　　　　　　　　┃　┗[`TCLLibrar`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L190) ：Library program  
-> 　　　　　　　　　┗[`TCLExecuts`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L245) ：Executable program list  
-> 　　　　　　　　　　　┗[`TCLExecut`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L199) ：Executable program  
-> 　　　　　　　　　　　　　┣[`TCLBuildrs`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L76) ：Build list  
+> 　　　　　　　　　┣[`TCLLibrars`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L245) ：Library list  
+> 　　　　　　　　　┃　┗[`TCLLibrar`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L196) ：Library  
+> 　　　　　　　　　┗[`TCLExecuts`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L256) ：Executable program list  
+> 　　　　　　　　　　　┗[`TCLExecut`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L208) ：Executable program  
+> 　　　　　　　　　　　　　┣[`TCLBuildrs`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L80) ：Build list  
 > 　　　　　　　　　　　　　┃　┗[`TCLBuildr`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Progra.pas#L33) ：Build  
-> 　　　　　　　　　　　　　┗[`TCLKernels`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Kernel.pas#L212) ：Kernel list  
-> 　　　　　　　　　　　　　　　┗[`TCLKernel`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Kernel.pas#L105) ：Kernel  
+> 　　　　　　　　　　　　　┗[`TCLKernels`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Kernel.pas#L214) ：Kernel list  
+> 　　　　　　　　　　　　　　　┗[`TCLKernel`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Kernel.pas#L106) ：Kernel  
 > 　　　　　　　　　　　　　　　　　┗[`TCLParames`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Kernel.pas#L65) ：Parameter list  
 > 　　　　　　　　　　　　　　　　　　　┗[`TCLParame`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Kernel.pas#L33) ：Parameter
 
@@ -47,14 +49,14 @@ The `TCLSystem` class automatically detects all **computing devices** on the exe
 The "**platform**" object (`TCLPlatfo`) represents the environment defined by each device vendor. 
 The `TCLSystem` class automatically detects all **platform**s and enumerate them in the `Platfors` property. 
 
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > TOpenCL.Platfors.Count :Integer    // Number of all platforms
 > TOpenCL.Platfors[*]    :TCLPlatfo  // Array of all platforms
 > ```
 
 The `TCLPlatfo` class provides information about a specific **platform** as properties.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Platfo := TOpenCL.Platfors[0];  // Selecting a specific platform
 > 
@@ -70,14 +72,14 @@ The `TCLPlatfo` class provides information about a specific **platform** as prop
 ### ⬤ 2.2. Device
 The "**device**" object (`TCLDevice`) represents a physical GPU or CPU.
 The `TCLPlatfo` class automatically detects all **device** objects in a specific **platform** object and enumerate them in the `Devices` property.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Platfo.Devices.Count :Integer    // Number of devices
 > _Platfo.Devices[*]    :TCLDevice  // Array of devices
 > ```
 
 The `TCLDevice` class provides information about a specific **device** as properties.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Device := _Platfo.Devices[0];  // Selecting a specific device
 > 
@@ -94,32 +96,38 @@ The `TCLDevice` class provides information about a specific **device** as proper
 ### ⬤ 2.3. Context
 The "**context**" object (`TCLContex`) manages a bundle of related data and programs.
 The `TCLContex` class is created from the `TCLPlatfo` class.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Contex := TCLContex.Create( _Platfo );
->   {or}
-> _Contex := _Platfo.Contexs.Add;
 > ```
+
+The generated `TCLContex` class is registered into the `Contexs[]` property of the `TCLPlatfo` class.
+> `Object Pascal`  
+> ```Delphi
+> _Platfo.Contexs.Count :Integer    // Number of contexts
+> _Platfo.Contexs[*]    :TCLQueuer  // Array  of contexts
+> ``
 
 ### ⬤ 2.4. Command Queue
 The "**command queue**" object (`TCLQueuer`) manages the commands sent to the device.
-The `TCLQueuer` class is created from the `TCLContex` and the `TCLDevice` classes.  
-> Delphi
+In other words, it is an object that connects **context** and **device**.
+The `TCLQueuer` class is created with the `TCLContex` and the `TCLDevice` classes as arguments.
+> `Object Pascal`
 > ```Delphi
 > _Queuer := TCLQueuer.Create( _Contex, _Device );
 >   {or}
-> _Queuer := _Contex.Queuers.Add( _Device );
+> _Queuer := _Contex.Queuers[ _Device ];
 > ```
 
 The `TCLContex` class registers the `TCLQueuer` class in the `Queuers` property.  
-> Delphi  
+> `Object Pascal`  
 > ```Delphi
-> _Contex.Queuers.Count :Integer    // コマンドキューの数
-> _Contex.Queuers[*]    :TCLQueuer  // コマンドキューの配列
+> _Contex.Queuers.Count :Integer    // Number of command queue
+> _Contex.Queuers[*]    :TCLQueuer  // Array  of command queue
 > ```
 
 Note that **context** and **device** on the different **platforms** cannot generate a **command queue**.  
-> Delphi  
+> `Object Pascal`  
 > ```Delphi
 > P0 := TOpenCL.Platfors[0];
 > P1 := TOpenCL.Platfors[1];
@@ -149,27 +157,21 @@ Note that **context** and **device** on the different **platforms** cannot gener
 ### ⬤ 2.5. Argument
 
 > [`TCLArgume`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.pas#L21)  
-　┣[`TCLMemory`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.pas#L24)  
-　┃　┣[`TCLBuffer`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Buffer.pas#L26)  
-　┃　┗[`TCLImager`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.pas#L26)  
-　┗[`TCLSamplr`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Samplr.pas#L21)  
+> 　┣[`TCLMemory`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.pas#L24)  
+> 　┃　┣[`TCLBuffer`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Buffer.pas#L24)  
+> 　┃　┗[`TCLImager`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.pas#L24)  
+> 　┗[`TCLSamplr`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Samplr.pas#L21)  
 
 #### ▼ 2.5.1. Memory
 The "**Memory**" object (`TCLMemory`) stores various data and shares it with the **device**.
 The `TCLMemory` class is created from the `TCLContex` and the `TCLQueuer` classes.
 The `TCLMemory` class is abstract and derives the `TCLBuffer` and `TCLImager` classes.  
 
-##### ▽ 2.5.1.1. Buffer
+#### ▽ 2.5.1.1. Buffer
 The `TCLBuffer` class stores an array of any "simple type" or "record type."  
-The `TCLBuffer` class is abstract and derives the `TCLDevBuf` and `TCLHosBuf` classes.
 
-* `TCLDevBuf<TItem>`  
-Save the array data to the device side. 
-* `TCLHosBuf<TItem>`  
-Save the array data to the host side.  
-
-If you want to send an array of the following structures to the device,  
-> OpenCL C
+If you want to send an array of the following structure type to the device,  
+> `OpenCL C`
 > ```C
 > typedef struct {
 >   int    A;
@@ -182,96 +184,81 @@ If you want to send an array of the following structures to the device,
 > ```
 
 generate the `TCLBuffer` class as follows.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > TItem = record
 >   A :Integer;
 >   B :Double;
 > end;
 > 
-> _Buffer := TCLDevBuf<TItem>.Create( _Contex, _Queuer );
->   {or}
-> _Buffer := TCLHosBuf<TItem>.Create( _Contex, _Queuer );
+> _Buffer := TCLBuffer<TItem>.Create( _Contex, _Queuer );
 > ```
 
-Read and write array data through the `Storag` property.
+Read and write array data through the `Data` property.
 The array data must be "**map**ped" to synchronize with the host before reading or writing, and "**unmap**ped" to synchronize with the device after use.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
-> _Buffer.Count := 3;                            // Setting the number of elements
-> _Buffer.Storag.Map;                            // Synchronize data with host
-> _Buffer.Storag[0] := TItem.Create( 1, 2.34 );  // Writing
-> _Buffer.Storag[1] := TItem.Create( 5, 6.78 );  // Writing
-> _Buffer.Storag[2] := TItem.Create( 9, 0.12 );  // Writing
-> _Buffer.Storag.Unmap;                          // Synchronize data with Device
+> _Buffer.Count := 3;                          // Setting the number of elements
+> _Buffer.Data.Map;                            // Synchronize data with host
+> _Buffer.Data[0] := TItem.Create( 1, 2.34 );  // Writing
+> _Buffer.Data[1] := TItem.Create( 5, 6.78 );  // Writing
+> _Buffer.Data[2] := TItem.Create( 9, 0.12 );  // Writing
+> _Buffer.Data.Unmap;                          // Synchronize data with Device
 > ```
 
-##### ▽ 2.5.1.2. Image
+#### ▽ 2.5.1.2. Image
 The "**image**" object (`TCLImager`) stores the pixel array in 1D to 3D.
 3D voxel data is also considered a type of 3D **image**.
 The `TCLImager` class is abstract and derives various classes depending on the layout and bits of the color channel.   
 
-> [`TCLImager`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.pas#L26)  
-　┣[`TCLImager1D`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.pas#L25)  
-　┃　┣[`TCLDevIma1DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L30)  
-　┃　┃　┣[`TCLDevIma1DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L56)  
-　┃　┃　┣[`TCLDevIma1DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L84)  
-　┃　┃　┗[`TCLDevIma1DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L112)  
-　┃　┗[`TCLHosIma1DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L43)  
-　┃　　　┣[`TCLHosIma1DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L70)  
-　┃　　　┣[`TCLHosIma1DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L98)  
-　┃　　　┗[`TCLHosIma1DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L126)  
+> [`TCLImager`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.pas#L24)  
+　┣[`TCLImager1D`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.pas#L24)  
+　┃　┗[`TCLImager1DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L25)  
+　┃　　　┣[`TCLImager1DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L38)  
+　┃　　　┣[`TCLImager1DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L52)  
+　┃　　　┗[`TCLImager1DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D1.FMX.pas#L66)  
 　┣[`TCLImager2D`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.pas#L25)  
-　┃　┣[`TCLDevIma2DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L30)  
-　┃　┃　┣[`TCLDevIma2DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L56)  
-　┃　┃　┣[`TCLDevIma2DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L84)  
-　┃　┃　┗[`TCLDevIma2DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L112)  
-　┃　┗[`TCLHosIma2DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L43)  
-　┃　　　┣[`TCLHosIma2DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L70)  
-　┃　　　┣[`TCLHosIma2DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L98)  
-　┃　　　┗[`TCLHosIma2DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L126)  
-　┗[`TCLImager3D`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.pas#L25)  
-　　　┣[`TCLDevIma3DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L30)  
-　　　┃　┣[`TCLDevIma3DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L56)  
-　　　┃　┣[`TCLDevIma3DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L84)  
-　　　┃　┗[`TCLDevIma3DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L112)  
-　　　┗[`TCLHosIma3DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L43)  
-　　　　　┣[`TCLHosIma3DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L70)  
-　　　　　┣[`TCLHosIma3DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L98)  
-　　　　　┗[`TCLHosIma3DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L126)  
+　┃　┗[`TCLImager2DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L26)  
+　┃　　　┣[`TCLImager2DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L39)  
+　┃　　　┣[`TCLImager2DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L53)  
+　┃　　　┣[`TCLImager2DxRGBAxUInt32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L67)  
+　┃　　　┗[`TCLImager2DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D2.FMX.pas#L81)  
+　┗[`TCLImager3D`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.pas#L24)  
+　　　┗[`TCLImager3DFMX`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L25)  
+　　　　　┣[`TCLImager3DxBGRAxUInt8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L38)  
+　　　　　┣[`TCLImager3DxBGRAxUFix8`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L52)  
+　　　　　┗[`TCLImager3DxRGBAxSFlo32`](https://github.com/LUXOPHIA/LUX.GPU.OpenCL/blob/master/LUX.GPU.OpenCL.Argume.Memory.Imager.D3.FMX.pas#L66)  
 
-The first part of the class name represents where the `TCLImager` class will store the data. 
-> * `TCLDevIma*Dx*x*`  
-Save the image data to the device side.  
-> * `TCLHosIma*Dx*x*`  
-Save the image data to the host side.  
+The first part of the class name represents the dimension of a image. 
+> * TCLImager`1D`x`*`x`*`  
+>   * Dimension：`1D`
+> * TCLImager`2D`x`*`x`*`  
+>   * Dimension：`2D`
+> * TCLImager`3D`x`*`x`*`  
+>   * Dimension：`3D`
 
-The second part of the class name represents the dimension of the `TCLImager` class. 
-> * `TCL***Ima1Dx*x*x*`  
-> `1D`
-> * `TCL***Ima2Dx*x*x*`  
-> `2D`
-> * `TCL***Ima3Dx*x*x*`  
-> `3D`
+The second part of the class name represents the color channel order of a image.  
+> * TCLImager`*`x`BGRA`x`*`  
+>   * Color channel order：`ＢＧＲＡ`
+> * TCLImager`*`x`RGBA`x`*`  
+>   * Color channel order：`ＲＧＢＡ`
 
-The third part of the class name represents the channel order of the `TCLImager` class.  
-> * `TCL***Ima*xBGRAx*x*`  
-> `ＢＧＲＡ`
-> * `TCL***Ima*xRGBAx*x*`  
-> `ＲＧＢＡ`
+The third part of the class name represents the color data type of a image.  
+> * TCLImager`*`x`*`x`UInt8`  
+>   * Device-side data type：`uint8` @ OpenCL C
+>   * Host-side data type：`UInt8 (Byte)` @ Delphi
+> * TCLImager`*`x`*`x`UFix8`  
+>   * Device-side data type：`float` @ OpenCL C
+>   * Host-side data type：`UInt8 (Byte)` @ Delphi
+> * TCLImager`*`x`*`x`UInt32`  
+>   * Device-side data type：`uint` @ OpenCL C
+>   * Host-side data type：`UInt32 (Cardinal)` @ Delphi
+> * TCLImager`*`x`*`x`SFlo32`  
+>   * Device-side data type：`float` @ OpenCL C
+>   * Host-side data type：`Single` @ Delphi
 
-The fourth part of the class name represents the color data type of the `TCLImager` class.  
-> * `TCL***Ima*Dx*xUInt8`  
->   * Device-side data type：`uint8`　@ OpenCL C
->   * Host-side data type：`Byte`　@ Delphi
-> * `TCL***Ima*Dx*xUFix8`  
->   * Device-side data type：`float`　@ OpenCL C
->   * Host-side data type：`Byte`　@ Delphi
-> * `TCL***Ima*Dx*xSFlo32`  
->   * Device-side data type：`float`　@ OpenCL C
->   * Host-side data type：`Single`　@ Delphi
-
-> Delphi
+The 'CountX'/'Y'/'Z' property sets the number of pixels in the X/Y/Z direction.
+> `Object Pascal`
 > ```Delphi
 > _Imager := TCLDevIma3DxBGRAxUInt8.Create( _Contex, _Queuer );
 > _Imager.CountX := 100;  // Number of pixels in the X direction
@@ -281,50 +268,52 @@ The fourth part of the class name represents the color data type of the `TCLImag
 
 #### ▼ 2.5.2. Sampler
 The sampler object (`TCLSamplr`) defines the interpolation method to get the pixel color in real-number coordinates.  
-> Delphi
+The `TCLSamplr` class is generated with the 'TCLContex' class as an argument.
+> `Object Pascal`
 > ```Delphi
 > _Samplr := TCLSamplr.Create( _Contex );
 > ```
 
 ### ⬤ 2.6. Program
 The "**program**" object (`TCLProgra`) reads the source code and builds it into an executable binary.
+The `TCLProgra` class is generated with the 'TCLContex' class as an argument.
 The `TCLProgra` class is abstract and derives the `TCLLibrar` and `TCLExecut` classes, depending on the type of source code. 
 
 #### ▼ 2.6.1. Library
 The `TCLLibrar` class is a program that does not include functions to execute directly is called a library type.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Librar := TCLLibrar.Create( _Contex );
->   {or}
-> _Librar := _Contex.Librars.Add;
 > 
 > _Librar.Source.LoadFromFile( 'Librar.cl' );  // load Sourcecode
 > ```
 
 #### ▼ 2.6.2. Executable
 The `TCLExecut` class is a program that includes functions (**Kernel**s) to execute directly.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Execut := TCLExecut.Create( _Contex );
->   {or}
-> _Execut := _Contex.Executs.Add;
 > 
 > _Execut.Source.LoadFromFile( 'Execut.cl' );  // load Sourcecode
 > ```
 
 ### ⬤ 2.7. Build
 A "**build**" (`TCLBuildr`) is an "action" performed by a **program**, but it is explicitly represented as a class in our library.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
-> _Buildr := _Execut.Buildrs.Add( _Device );
+> _Buildr := TCLBuildr.Create( _Execut, _Device );
+>   {or}
+> _Buildr := _Execut.Buildrs[ _Device ];
 >   {or}
 > _Buildr := _Execut.BuildTo( _Device );
 > ```
 
 The **kernel** object (see chapter 2.8.) automatically creates the `TCLBuildr` class at runtime.
 However, you can check for compiling and linking errors by creating a `TCLBuildr` class before running the kernel.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
+> _Buildr.Handle;  // Run build
+> 
 > _Buildr.CompileStatus :T_cl_build_status  // Compile status
 > _Buildr.CompileLog    :String             // Compile log
 > _Buildr.LinkStatus    :T_cl_build_status  // Link status
@@ -333,7 +322,7 @@ However, you can check for compiling and linking errors by creating a `TCLBuildr
 
 ### ⬤ 2.8. Kernel
 The "**kernel**" object (`TCLKernel`) represents an executable function in a program.  
-> OpenCL C
+> `OpenCL C`
 > ```C
 > kernel void Main( ･･･ ) {
 >   ･･･
@@ -341,7 +330,7 @@ The "**kernel**" object (`TCLKernel`) represents an executable function in a pro
 > ```
 
 The `TCLKernel` class is created from the `TCLExecut` and `TCLQueuer` classes. 
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Kernel := TCLKernel.Create( _Execut, 'Main', _Queuer );
 >   {or}
@@ -351,7 +340,7 @@ The `TCLKernel` class is created from the `TCLExecut` and `TCLQueuer` classes.
 
 #### ▼ 2.8.1. Parameter
 The **memory** object connects to the parameter in the source code through the "Parames" property of the `TCLKernel` class.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Kernel.Parames['Buffer'] := _Buffer;  // Connect to buffer
 > _Kernel.Parames['Imager'] := _Imager;  // Connect to image
@@ -360,7 +349,7 @@ The **memory** object connects to the parameter in the source code through the "
 
 #### ▼ 2.8.2. Loop Count
 The OpenCL program repeatedly runs like a triple loop-statement.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Kernel.GloSizX := 100;  // Number of loops in X direction
 > _Kernel.GloSizY := 200;  // Number of loops in Y direction
@@ -368,7 +357,7 @@ The OpenCL program repeatedly runs like a triple loop-statement.
 > ```
 
 You can also specify the minimum and maximum loop indices.  
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Kernel.GloMinX := 0;      // Start index in X direction
 > _Kernel.GloMinY := 0;      // Start index in Y direction
@@ -380,7 +369,7 @@ You can also specify the minimum and maximum loop indices.
 > ```
 
 #### ▼ 2.8.3. Run
-> Delphi
+> `Object Pascal`
 > ```Delphi
 > _Kernel.Run;  // Run
 > ```

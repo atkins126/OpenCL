@@ -13,10 +13,10 @@ uses System.Generics.Collections,
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TCLKernels     <TCLExecut_,TCLContex_,TCLPlatfo_:class> = class;
-       TCLKernel    <TCLExecut_,TCLContex_,TCLPlatfo_:class> = class;
-         TCLParames <TCLExecut_,TCLContex_,TCLPlatfo_:class> = class;
-           TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_:class> = class;
+     TCLKernels     <TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class;
+       TCLKernel    <TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class;
+         TCLParames <TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class;
+           TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -28,14 +28,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
-     TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_:class> = class( TListChildr<TCLKernel <TCLExecut_,TCLContex_,TCLPlatfo_>,
-                                                                            TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>> )
+     TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class( TListChildr<TCLKernel <TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>,
+                                                                                       TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>> )
      private
-       type TCLArgume_  = TCLArgume <TCLContex_,TCLPlatfo_>;
-            TCLKernel_  = TCLKernel <TCLExecut_,TCLContex_,TCLPlatfo_>;
-            TCLParames_ = TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>;
+       type TCLArgume_  = TCLArgume <TCLSystem_,TCLPlatfo_,TCLContex_>;
+            TCLKernel_  = TCLKernel <TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
+            TCLParames_ = TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
      protected
        _Name    :String;
        _ParameI :Integer;
@@ -60,17 +60,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Bind :T_cl_int;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
-     TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_:class> = class( TListParent<TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>,
-                                                                             TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>> )
+     TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class( TListParent<TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>,
+                                                                                        TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>> )
      private
-       type TCLArgume_ = TCLArgume<TCLContex_,TCLPlatfo_>;
-            TCLKernel_ = TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>;
-            TCLParame_ = TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>;
-            TCLVarArgs = TDictionary<String,TCLParame_>;
+       type TCLArgume_  = TCLArgume<TCLSystem_,TCLPlatfo_,TCLContex_>;
+            TCLKernel_  = TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
+            TCLParame_  = TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
+            TCLNamPars_ = TDictionary<String,TCLParame_>;
      protected
-       _VarArgs :TCLVarArgs;
+       _NamPars :TCLNamPars_;
        _FindsOK :Boolean;
        _BindsOK :Boolean;
        ///// アクセス
@@ -96,19 +96,18 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property FindsOK                       :Boolean    read GetFindsOK write SetFindsOK;
        property BindsOK                       :Boolean    read GetBindsOK write SetBindsOK;
        ///// メソッド
-       function Add( const Name_:String; const Argume_:TCLArgume_ ) :TCLParame_; overload;
        function Contains( const Name_:String ) :Boolean;
+       function Add( const Name_:String ) :TCLParame_; overload;
+       function Add( const Name_:String; const Argume_:TCLArgume_ ) :TCLParame_; overload;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
-     TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_:class> = class( TListChildr<TCLExecut_,TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_>> )
+     TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class( TListChildr<TCLExecut_,TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>> )
      private
-       type TCLQueuer_  = TCLQueuer <TCLContex_,TCLPlatfo_>;
-            TCLKernels_ = TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_>;
-            TCLKernel_  = TCLKernel <TCLExecut_,TCLContex_,TCLPlatfo_>;
-            TCLParames_ = TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>;
-            TCLParame_  = TCLParame <TCLExecut_,TCLContex_,TCLPlatfo_>;
+       type TCLQueuer_  = TCLQueuer <TCLSystem_,TCLPlatfo_,TCLContex_>;
+            TCLKernels_ = TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
+            TCLParames_ = TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
        ///// メソッド
        function GetInfo<_TYPE_>( const Name_:T_cl_kernel_info ) :_TYPE_;
        function GetInfoSize( const Name_:T_cl_kernel_info ) :T_size_t;
@@ -126,27 +125,29 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _GloMin  :TLoop3D;
        _GloSiz  :TLoop3D;
        ///// アクセス
-       function GetHandle :T_cl_kernel;
-       procedure SetHandle( const Handle_:T_cl_kernel );
-       function GetGloMinX :Integer;
-       procedure SetGloMinX( const GloMinX_:Integer );
-       function GetGloMinY :Integer;
-       procedure SetGloMinY( const GloMinY_:Integer );
-       function GetGloMinZ :Integer;
-       procedure SetGloMinZ( const GloMinZ_:Integer );
-       function GetGloSizX :Integer;
-       procedure SetGloSizX( const GloSizX_:Integer );
-       function GetGloSizY :Integer;
-       procedure SetGloSizY( const GloSizY_:Integer );
-       function GetGloSizZ :Integer;
-       procedure SetGloSizZ( const GloSizZ_:Integer );
-       function GetGloMaxX :Integer;
-       procedure SetGloMaxX( const GloMaxX_:Integer );
-       function GetGloMaxY :Integer;
-       procedure SetGloMaxY( const GloMaxY_:Integer );
-       function GetGloMaxZ :Integer;
-       procedure SetGloMaxZ( const GloMaxZ_:Integer );
-       function GetGloDimN :Integer;
+       function GetHandle :T_cl_kernel; virtual;
+       procedure SetHandle( const Handle_:T_cl_kernel ); virtual;
+       function GetName :String; virtual;
+       procedure SetName( const Name_:String ); virtual;
+       function GetGloMinX :Integer; virtual;
+       procedure SetGloMinX( const GloMinX_:Integer ); virtual;
+       function GetGloMinY :Integer; virtual;
+       procedure SetGloMinY( const GloMinY_:Integer ); virtual;
+       function GetGloMinZ :Integer; virtual;
+       procedure SetGloMinZ( const GloMinZ_:Integer ); virtual;
+       function GetGloSizX :Integer; virtual;
+       procedure SetGloSizX( const GloSizX_:Integer ); virtual;
+       function GetGloSizY :Integer; virtual;
+       procedure SetGloSizY( const GloSizY_:Integer ); virtual;
+       function GetGloSizZ :Integer; virtual;
+       procedure SetGloSizZ( const GloSizZ_:Integer ); virtual;
+       function GetGloMaxX :Integer; virtual;
+       procedure SetGloMaxX( const GloMaxX_:Integer ); virtual;
+       function GetGloMaxY :Integer; virtual;
+       procedure SetGloMaxY( const GloMaxY_:Integer ); virtual;
+       function GetGloMaxZ :Integer; virtual;
+       procedure SetGloMaxZ( const GloMaxZ_:Integer ); virtual;
+       function GetGloDimN :Integer; virtual;
        (* cl_kernel_info *)
        function GetKERNEL_FUNCTION_NAME :String;
        function GetKERNEL_NUM_ARGS :T_cl_uint;
@@ -169,13 +170,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create; override;
        constructor Create( const Execut_:TCLExecut_ ); overload; virtual;
        constructor Create( const Execut_:TCLExecut_; const Name_:String ); overload; virtual;
+       constructor Create( const Execut_:TCLExecut_; const Queuer_:TCLQueuer_ ); overload; virtual;
        constructor Create( const Execut_:TCLExecut_; const Name_:String; const Queuer_:TCLQueuer_ ); overload; virtual;
        destructor Destroy; override;
        ///// プロパティ
        property Execut  :TCLExecut_  read GetOwnere                  ;
        property Kernels :TCLKernels_ read GetParent                  ;
        property Handle  :T_cl_kernel read GetHandle  write SetHandle ;
-       property Name    :String      read   _Name    write   _Name   ;
+       property Name    :String      read GetName    write SetName   ;
        property Queuer  :TCLQueuer_  read   _Queuer                  ;
        property Parames :TCLParames_ read   _Parames                 ;
        property GloMinX :Integer     read GetGloMinX write SetGloMinX;
@@ -207,12 +209,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Run;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
-     TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_:class> = class( TListParent<TCLExecut_,TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>> )
+     TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_:class> = class( TListParent<TCLExecut_,TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>> )
      private
-       type TCLQueuer_ = TCLQueuer<TCLContex_,TCLPlatfo_>;
-            TCLKernel_ = TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>;
+       type TCLQueuer_ = TCLQueuer<TCLSystem_,TCLPlatfo_,TCLContex_>;
+            TCLKernel_ = TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>;
      protected
      public
        ///// プロパティ
@@ -231,13 +233,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 implementation //############################################################### ■
 
 uses System.SysUtils,
-     LUX.GPU.OpenCL;
+     LUX.GPU.OpenCL.Progra;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -245,12 +247,12 @@ uses System.SysUtils,
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.GetName :String;
+function TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetName :String;
 begin
      Result := _Name;
 end;
 
-procedure TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.SetName( const Name_:String );
+procedure TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetName( const Name_:String );
 begin
      _Name := Name_;
 
@@ -259,7 +261,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.GetParameI :Integer;
+function TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetParameI :Integer;
 begin
      Parames.FindsOK;
 
@@ -268,12 +270,12 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.GetArgume :TCLArgume_;
+function TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetArgume :TCLArgume_;
 begin
      Result := _Argume;
 end;
 
-procedure TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.SetArgume( const Argume_:TCLArgume_ );
+procedure TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetArgume( const Argume_:TCLArgume_ );
 begin
      _Argume := Argume_;
 
@@ -282,7 +284,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.Create;
+constructor TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create;
 begin
      inherited;
 
@@ -291,14 +293,14 @@ begin
      _Argume  := nil;
 end;
 
-constructor TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.Create( const Parames_:TCLParames_; const Name_:String );
+constructor TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create( const Parames_:TCLParames_; const Name_:String );
 begin
      inherited Create( Parames_ );
 
      _Name := Name_;
 end;
 
-constructor TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.Create( const Parames_:TCLParames_; const Name_:String; const Argume_:TCLArgume_ );
+constructor TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create( const Parames_:TCLParames_; const Name_:String; const Argume_:TCLArgume_ );
 begin
      Create( Parames_, Name_ );
 
@@ -307,7 +309,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TCLParame<TCLExecut_,TCLContex_,TCLPlatfo_>.Bind :T_cl_int;
+function TCLParame<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Bind :T_cl_int;
 var
    H :T_cl_mem;
 begin
@@ -319,7 +321,7 @@ begin
                                @H );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -327,34 +329,33 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.GetChildr( const Name_:String ) :TCLParame_;
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetChildr( const Name_:String ) :TCLParame_;
 begin
-     Result := _VarArgs[ Name_ ];
+     if Contains( Name_ ) then Result := _NamPars[ Name_ ]
+                          else Result := Add( Name_ );
 end;
 
-procedure TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.SetChildr( const Name_:String; const Childr_:TCLParame_ );
+procedure TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetChildr( const Name_:String; const Childr_:TCLParame_ );
 begin
-     if _VarArgs.ContainsKey( Name_ ) then _VarArgs[ Name_ ].Free;
-
-     _VarArgs[ Name_ ] := Childr_;
-end;
-
-//------------------------------------------------------------------------------
-
-function TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.GetArgumes( const Name_:String ) :TCLArgume_;
-begin
-     Result := _VarArgs[ Name_ ].Argume;
-end;
-
-procedure TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.SetArgumes( const Name_:String; const Argume_:TCLArgume_ );
-begin
-     if _VarArgs.ContainsKey( Name_ ) then _VarArgs[ Name_ ].Argume := Argume_
-                                      else Add( Name_, Argume_ );
+     Childr_.Name   := Name_;
+     Childr_.Parent := Self;
 end;
 
 //------------------------------------------------------------------------------
 
-function TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.GetFindsOK :Boolean;
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetArgumes( const Name_:String ) :TCLArgume_;
+begin
+     Result := _NamPars[ Name_ ].Argume;
+end;
+
+procedure TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetArgumes( const Name_:String; const Argume_:TCLArgume_ );
+begin
+     Childrs[ Name_ ].Argume := Argume_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetFindsOK :Boolean;
 var
    I :T_cl_uint;
    K :String;
@@ -368,14 +369,17 @@ begin
                K := Kernel.KERNEL_ARG_NAME[ I ];
 
                if Contains( K ) then Items[ K ]._ParameI := I
-                                else _FindsOK := False;
+               else
+               begin
+                    _FindsOK := False;  Break;
+               end;
           end;
      end;
 
      Result := _FindsOK;
 end;
 
-procedure TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.SetFindsOK( const FindsOK_:Boolean );
+procedure TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetFindsOK( const FindsOK_:Boolean );
 begin
      _FindsOK := FindsOK_;
      _BindsOK := False;
@@ -383,95 +387,106 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.GetBindsOK :Boolean;
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetBindsOK :Boolean;
 var
    A :TCLParame_;
 begin
      if FindsOK and not _BindsOK then
      begin
-          for A in Self do AssertCL( A.Bind, 'TCLParame.Bind is Error!' );
-
           _BindsOK := True;
+
+          for A in Self do
+          begin
+               if A.Bind <> CL_SUCCESS then
+               begin
+                    _BindsOK := False;  Break;
+               end;
+          end;
      end;
 
      Result := _BindsOK;
 end;
 
-procedure TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.SetBindsOK( const BindsOK_:Boolean );
+procedure TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetBindsOK( const BindsOK_:Boolean );
 begin
      _BindsOK := BindsOK_;
 end;
 
 /////////////////////////////////////////////////////////////////////// イベント
 
-procedure TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.OnInsertChild( const Childr_:TCLParame_ );
+procedure TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.OnInsertChild( const Childr_:TCLParame_ );
 begin
      inherited;
 
-     if _VarArgs.ContainsKey( Childr_.Name ) then _VarArgs[ Childr_.Name ].Free;
+     if _NamPars.ContainsKey( Childr_.Name ) then _NamPars[ Childr_.Name ].Free;
 
-     _VarArgs.Add( Childr_.Name, Childr_ );
+     _NamPars.Add( Childr_.Name, Childr_ );
 end;
 
-procedure TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.OnRemoveChild( const Childr_:TCLParame_ );
+procedure TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.OnRemoveChild( const Childr_:TCLParame_ );
 begin
      inherited;
 
-     _VarArgs.Remove( Childr_.Name );
+     _NamPars.Remove( Childr_.Name );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.Create;
+constructor TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create;
 begin
      inherited;
 
-     _VarArgs := TCLVarArgs.Create;
+     _NamPars := TCLNamPars_.Create;
 
      _FindsOK := False;
      _BindsOK := False;
 end;
 
-destructor TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.Destroy;
+destructor TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Destroy;
 begin
      Clear;
 
-     _VarArgs.Free;
+     _NamPars.Free;
 
      inherited;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.Add( const Name_:String; const Argume_:TCLArgume_ ) :TCLParame_;
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Contains( const Name_:String ) :Boolean;
 begin
-     Result := TCLParame_.Create( Self, Name_, Argume_ );
+     Result := _NamPars.ContainsKey( Name_ );
 end;
 
 //------------------------------------------------------------------------------
 
-function TCLParames<TCLExecut_,TCLContex_,TCLPlatfo_>.Contains( const Name_:String ) :Boolean;
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Add( const Name_:String ) :TCLParame_;
 begin
-     Result := _VarArgs.ContainsKey( Name_ );
+     Result := TCLParame_.Create( Self, Name_ );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>
+function TCLParames<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Add( const Name_:String; const Argume_:TCLArgume_ ) :TCLParame_;
+begin
+     Result := TCLParame_.Create( Self, Name_, Argume_ );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetInfo<_TYPE_>( const Name_:T_cl_kernel_info ) :_TYPE_;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetInfo<_TYPE_>( const Name_:T_cl_kernel_info ) :_TYPE_;
 begin
      AssertCL( clGetKernelInfo( Handle, Name_, SizeOf( _TYPE_ ), @Result, nil ), 'TCLKernel.GetInfo is Error!' );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetInfoSize( const Name_:T_cl_kernel_info ) :T_size_t;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetInfoSize( const Name_:T_cl_kernel_info ) :T_size_t;
 begin
      AssertCL( clGetKernelInfo( Handle, Name_, 0, nil, @Result ), 'TCLKernel.GetInfoSize is Error!' );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetInfos<_TYPE_>( const Name_:T_cl_kernel_info ) :TArray<_TYPE_>;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetInfos<_TYPE_>( const Name_:T_cl_kernel_info ) :TArray<_TYPE_>;
 var
    S :T_size_t;
 begin
@@ -482,24 +497,24 @@ begin
      AssertCL( clGetKernelInfo( Handle, Name_, S, @Result[ 0 ], nil ), 'TCLKernel.GetInfos is Error!' );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetInfoString( const Name_:T_cl_kernel_info ) :String;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetInfoString( const Name_:T_cl_kernel_info ) :String;
 begin
      Result := TrimRight( String( P_char( GetInfos<T_char>( Name_ ) ) ) );
 end;
 
 //------------------------------------------------------------------------------
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetArgInfo<_TYPE_>( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :_TYPE_;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetArgInfo<_TYPE_>( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :_TYPE_;
 begin
      AssertCL( clGetKernelArgInfo( Handle, I_, Name_, SizeOf( _TYPE_ ), @Result, nil ), 'TCLKernel.GetArgInfo is Error!' );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetArgInfoSize( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :T_size_t;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetArgInfoSize( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :T_size_t;
 begin
      AssertCL( clGetKernelArgInfo( Handle, I_, Name_, 0, nil, @Result ), 'TCLKernel.GetArgInfoSize is Error!' );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetArgInfos<_TYPE_>( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :TArray<_TYPE_>;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetArgInfos<_TYPE_>( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :TArray<_TYPE_>;
 var
    S :T_size_t;
 begin
@@ -510,7 +525,7 @@ begin
      AssertCL( clGetKernelArgInfo( Handle, I_, Name_, S, @Result[ 0 ], nil ), 'TCLKernel.GetArgInfos is Error!' );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetArgInfoString( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :String;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetArgInfoString( const I_:T_cl_uint; const Name_:T_cl_kernel_arg_info ) :String;
 begin
      Result := TrimRight( String( P_char( GetArgInfos<T_char>( I_, Name_ ) ) ) );
 end;
@@ -519,14 +534,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetHandle :T_cl_kernel;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetHandle :T_cl_kernel;
 begin
      if not Assigned( _Handle ) then CreateHandle;
 
      Result := _Handle;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetHandle( const Handle_:T_cl_kernel );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetHandle( const Handle_:T_cl_kernel );
 begin
      if Assigned( _Handle ) then AssertCL( DestroHandle, 'TCLKernel.DestroHandle is Error!' );
 
@@ -535,103 +550,117 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloMinX :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetName :String;
+begin
+     Result := _Name;
+end;
+
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetName( const Name_:String );
+begin
+     _Name := Name_;
+
+     Handle := nil;
+end;
+
+//------------------------------------------------------------------------------
+
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloMinX :Integer;
 begin
      Result := _GloMin.X;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloMinX( const GloMinX_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloMinX( const GloMinX_:Integer );
 begin
      _GloMin.X := GloMinX_;
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloMinY :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloMinY :Integer;
 begin
      Result := _GloMin.Y;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloMinY( const GloMinY_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloMinY( const GloMinY_:Integer );
 begin
      _GloMin.Y := GloMinY_;
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloMinZ :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloMinZ :Integer;
 begin
      Result := _GloMin.Z;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloMinZ( const GloMinZ_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloMinZ( const GloMinZ_:Integer );
 begin
      _GloMin.Z := GloMinZ_;
 end;
 
 //------------------------------------------------------------------------------
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloSizX :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloSizX :Integer;
 begin
      Result := _GloSiz.X;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloSizX( const GloSizX_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloSizX( const GloSizX_:Integer );
 begin
      _GloSiz.X := GloSizX_;
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloSizY :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloSizY :Integer;
 begin
      Result := _GloSiz.Y;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloSizY( const GloSizY_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloSizY( const GloSizY_:Integer );
 begin
      _GloSiz.Y := GloSizY_;
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloSizZ :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloSizZ :Integer;
 begin
      Result := _GloSiz.Z;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloSizZ( const GloSizZ_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloSizZ( const GloSizZ_:Integer );
 begin
      _GloSiz.Z := GloSizZ_;
 end;
 
 //------------------------------------------------------------------------------
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloMaxX :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloMaxX :Integer;
 begin
      Result := GloMinX + GloSizX - 1;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloMaxX( const GloMaxX_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloMaxX( const GloMaxX_:Integer );
 begin
      GloSizX := GloMaxX_ - GloMinX + 1;
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloMaxY :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloMaxY :Integer;
 begin
      Result := GloMinY + GloSizY - 1;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloMaxY( const GloMaxY_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloMaxY( const GloMaxY_:Integer );
 begin
      GloSizY := GloMaxY_ - GloMinY + 1;
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloMaxZ :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloMaxZ :Integer;
 begin
      Result := GloMinZ + GloSizZ - 1;
 end;
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.SetGloMaxZ( const GloMaxZ_:Integer );
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.SetGloMaxZ( const GloMaxZ_:Integer );
 begin
      GloSizZ := GloMaxZ_ - GloMinZ + 1;
 end;
 
 //------------------------------------------------------------------------------
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetGloDimN :Integer;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetGloDimN :Integer;
 begin
      if ( GloMinZ > 0 ) or ( GloSizZ > 1 ) then Result := 3
                                            else
@@ -641,33 +670,33 @@ end;
 
 //----------------------------------------------------------(* cl_kernel_info *)
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_FUNCTION_NAME :String;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_FUNCTION_NAME :String;
 begin
      Result := GetInfoString( CL_KERNEL_FUNCTION_NAME );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_NUM_ARGS :T_cl_uint;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_NUM_ARGS :T_cl_uint;
 begin
      Result := GetInfo<T_cl_uint>( CL_KERNEL_NUM_ARGS );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_REFERENCE_COUNT :T_cl_uint;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_REFERENCE_COUNT :T_cl_uint;
 begin
      Result := GetInfo<T_cl_uint>( CL_KERNEL_REFERENCE_COUNT );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_CONTEXT :T_cl_context;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_CONTEXT :T_cl_context;
 begin
      Result := GetInfo<T_cl_context>( CL_KERNEL_CONTEXT );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_PROGRAM :T_cl_program;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_PROGRAM :T_cl_program;
 begin
      Result := GetInfo<T_cl_program>( CL_KERNEL_PROGRAM );
 end;
 
 {$IF CL_VERSION_1_2 <> 0 }
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_ATTRIBUTES :String;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_ATTRIBUTES :String;
 begin
      Result := GetInfoString( CL_KERNEL_ATTRIBUTES );
 end;
@@ -675,43 +704,43 @@ end;
 
 //------------------------------------------------------(* cl_kernel_arg_info *)
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_ARG_ADDRESS_QUALIFIER( const I_:T_cl_uint ) :T_cl_kernel_arg_address_qualifier;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_ARG_ADDRESS_QUALIFIER( const I_:T_cl_uint ) :T_cl_kernel_arg_address_qualifier;
 begin
      Result := GetArgInfo<T_cl_kernel_arg_address_qualifier>( I_, CL_KERNEL_ARG_ADDRESS_QUALIFIER );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_ARG_ACCESS_QUALIFIER( const I_:T_cl_uint ) :T_cl_kernel_arg_access_qualifier;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_ARG_ACCESS_QUALIFIER( const I_:T_cl_uint ) :T_cl_kernel_arg_access_qualifier;
 begin
      Result := GetArgInfo<T_cl_kernel_arg_access_qualifier>( I_, CL_KERNEL_ARG_ACCESS_QUALIFIER );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_ARG_TYPE_NAME( const I_:T_cl_uint ) :String;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_ARG_TYPE_NAME( const I_:T_cl_uint ) :String;
 begin
      Result := GetArgInfoString( I_, CL_KERNEL_ARG_TYPE_NAME );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_ARG_TYPE_QUALIFIER( const I_:T_cl_uint ) :T_cl_kernel_arg_type_qualifier;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_ARG_TYPE_QUALIFIER( const I_:T_cl_uint ) :T_cl_kernel_arg_type_qualifier;
 begin
      Result := GetArgInfo<T_cl_kernel_arg_type_qualifier>( I_, CL_KERNEL_ARG_TYPE_QUALIFIER );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.GetKERNEL_ARG_NAME( const I_:T_cl_uint ) :String;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.GetKERNEL_ARG_NAME( const I_:T_cl_uint ) :String;
 begin
      Result := GetArgInfoString( I_, CL_KERNEL_ARG_NAME );
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.CreateHandle :T_cl_int;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.CreateHandle :T_cl_int;
 var
-   B :TCLBuildr;
+   B :TCLBuildr<TCLSystem_,TCLPlatfo_,TCLContex_>;
 begin
-     B := TCLExecut( Execut ).Buildrs[ TCLQueuer( Queuer ).Device ];
+     B := TCLExecut<TCLSystem_,TCLPlatfo_,TCLContex_>( Execut ).Buildrs[ Queuer.Device ];
 
      _Handle := clCreateKernel( B.Handle, P_char( AnsiString( _Name ) ), @Result );
 end;
 
-function TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.DestroHandle :T_cl_int;
+function TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.DestroHandle :T_cl_int;
 begin
      Result := clReleaseKernel( _Handle );
 
@@ -720,7 +749,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.Create;
+constructor TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create;
 begin
      inherited;
 
@@ -735,26 +764,33 @@ begin
      _GloSiz.X := 1;  _GloSiz.Y := 1;  _GloSiz.Z := 1;
 end;
 
-constructor TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.Create( const Execut_:TCLExecut_ );
+constructor TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create( const Execut_:TCLExecut_ );
 begin
-     inherited Create( TCLExecut( Execut_ ).Kernels );
+     inherited Create( TCLExecut<TCLSystem_,TCLPlatfo_,TCLContex_>( Execut_ ).Kernels );
 end;
 
-constructor TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.Create( const Execut_:TCLExecut_; const Name_:String );
+constructor TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create( const Execut_:TCLExecut_; const Name_:String );
 begin
      Create( Execut_ );
 
      _Name := Name_;
 end;
 
-constructor TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.Create( const Execut_:TCLExecut_; const Name_:String; const Queuer_:TCLQueuer_ );
+constructor TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create( const Execut_:TCLExecut_; const Queuer_:TCLQueuer_ );
+begin
+     Create( Execut_ );
+
+     _Queuer := Queuer_;
+end;
+
+constructor TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Create( const Execut_:TCLExecut_; const Name_:String; const Queuer_:TCLQueuer_ );
 begin
      Create( Execut_, Name_ );
 
      _Queuer := Queuer_;
 end;
 
-destructor TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.Destroy;
+destructor TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Destroy;
 begin
      _Parames.Free;
 
@@ -765,18 +801,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TCLKernel<TCLExecut_,TCLContex_,TCLPlatfo_>.Run;
+procedure TCLKernel<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Run;
 begin
-     Parames.BindsOK;
+     Assert( Parames.BindsOK, 'TCLKernel.Parames.BindsOK = False' );
 
-     AssertCL( clEnqueueNDRangeKernel( _Queuer.Handle, Handle,
-                                       2, @_GloMin, @_GloSiz, nil,
+     AssertCL( clEnqueueNDRangeKernel( Queuer.Handle, Handle,
+                                       GloDimN, @_GloMin, @_GloSiz, nil,
                                        0, nil, nil ), 'TCLKernel.Run is Error!' );
 
-     AssertCL( clFinish( _Queuer.Handle ), 'TCLKernel.Run is Error!' );
+     AssertCL( clFinish( Queuer.Handle ), 'TCLKernel.Run is Error!' );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -784,12 +820,12 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-function TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_>.Add( const Name_:String ) :TCLKernel_;
+function TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Add( const Name_:String ) :TCLKernel_;
 begin
      Result := TCLKernel_.Create( Execut, Name_ );
 end;
 
-function TCLKernels<TCLExecut_,TCLContex_,TCLPlatfo_>.Add( const Name_:String; const Queuer_:TCLQueuer_ ) :TCLKernel_;
+function TCLKernels<TCLSystem_,TCLPlatfo_,TCLContex_,TCLExecut_>.Add( const Name_:String; const Queuer_:TCLQueuer_ ) :TCLKernel_;
 begin
      Result := TCLKernel_.Create( Execut, Name_, Queuer_ );
 end;
