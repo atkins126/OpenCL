@@ -1,31 +1,56 @@
 cmake_minimum_required(VERSION 3.0)
 
+# Include guard for including this project multiple times
+if(TARGET Headers)
+  return()
+endif()
+
 project(OpenCLHeaders
   VERSION 2.2
   LANGUAGES C # Ideally should be NONE, but GNUInstallDirs detects platform arch using try_compile
   # https://stackoverflow.com/questions/43379311/why-does-project-affect-cmakes-opinion-on-cmake-sizeof-void-p
 )
 
+option(OPENCL_HEADERS_BUILD_TESTING "Enable support for OpenCL C headers testing." OFF)
+
 include(GNUInstallDirs)
 
 add_library(Headers INTERFACE)
-target_include_directories(Headers
-  SYSTEM
-  BEFORE
-  INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+add_library(OpenCL::Headers ALIAS Headers)
+
+if(CMAKE_SYSTEM_NAME MATCHES Darwin)
+  execute_process(
+    COMMAND ln -shf ${CMAKE_CURRENT_SOURCE_DIR}/CL ${CMAKE_CURRENT_BINARY_DIR}/CL
+    COMMAND ln -shf ${CMAKE_CURRENT_SOURCE_DIR}/CL ${CMAKE_CURRENT_BINARY_DIR}/OpenCL
+  )
+  target_include_directories(Headers
+    INTERFACE
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  )
+  install(CODE "
+    file(MAKE_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/CL)
+    execute_process(
+      COMMAND ln -shf CL ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/OpenCL
+    )"
+  )
+else()
+  target_include_directories(Headers
+    INTERFACE
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  )
+endif()
 
 install(
   TARGETS Headers
   EXPORT OpenCLHeadersTargets
 )
-
 install(
   DIRECTORY CL
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
 export(
   EXPORT OpenCLHeadersTargets
   FILE ${PROJECT_BINARY_DIR}/OpenCLHeaders/OpenCLHeadersTargets.cmake
@@ -60,7 +85,9 @@ install(
   DESTINATION ${config_package_location}
 )
 
-if(BUILD_TESTING)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_HEADERS_BUILD_TESTING)
   include(CTest)
+endif()
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_HEADERS_BUILD_TESTING) AND BUILD_TESTING)
   add_subdirectory(tests)
 endif()
